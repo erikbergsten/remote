@@ -64,10 +64,13 @@
 
 (defn glick
   [name]
-  (if (toggles name)
-    (do (toggle name)
-        )
-    (click name)))
+  (if (= name "Text")
+    (let [text (. js/window prompt "Enter text")]
+      (post "/post/text" {:text text}))
+    (if (toggles name)
+      (do (toggle name)
+          )
+      (click name))))
 
 (defn get-key
   [name]
@@ -133,6 +136,7 @@
     (gen-key 165 2 50 50 "Down" "Down")
     (gen-key 216 2 50 50 "Left" "Left")
     (gen-key 267 2 50 50 "Right" "Right")
+    (gen-key 318 2 50 50 "Text" "Text")
    [:g {:transform (translate 2 53)}
     (doall (map (fn [row index]
                   (gen-row row (* index 32) 30))
@@ -170,7 +174,7 @@
 
 (defn touch-pad
   []
-  [:canvas {:style {:background "#fcc"
+  [:canvas {:style {:background "#eee"
                     :height "100%"
                     :width "100%"}
             :on-touch-start on-touch-start
@@ -178,26 +182,11 @@
             :on-touch-end on-touch-end}
            ])
 
-(def value (r/atom ""))
-(defn text-input
-  []
-  [:div {:style {:display "block"
-          :position "absolute"
-          :width "100%"
-          :top 0}}
-   [:input {:type "text"
-            :value @value
-            :on-change #(reset! value (-> % .-target .-value))
-            :style {:width "80%"}}]
-   [:button {:on-click #(do (post "/post/text" {:text @value})
-                            (reset! value ""))
-             :style {:width "fill"}} "Enter"]])
-
 (defn content
   []
   [:div {:style {:height "100%"}}
    (touch-pad)
-   (text-input)
+   ;(text-input)
    (keyboard)])
 
 (defn mount
