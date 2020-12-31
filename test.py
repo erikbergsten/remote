@@ -37,7 +37,7 @@ def get_key(key):
     else:
         return key.lower()
 
-app = Flask(__name__, static_url_path="", static_folder="reagent")
+app = Flask(__name__, static_url_path="", static_folder="public")
 
 @app.route('/')
 def index():
